@@ -18,7 +18,7 @@ jobs:
       - name: Run Flutter Analyze
         run: flutter analyze
       - name: Check for Issues
-        if: ${{ steps.analyze.outputs.exit-code }} != 0 || ${{ steps.analyze.outputs.stdout != '' }}
+        if: ${{ steps.analyze.outputs.exit-code }} != 0
         run: exit 1
 
 
