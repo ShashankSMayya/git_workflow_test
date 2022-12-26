@@ -23,15 +23,11 @@ jobs:
         run: flutter format lib
       - name: Checkout Formatted Files
         run: git checkout -- .
-      # Check if there are any changes to commit
-      - name: Check for Changes
-        run: |
-          CHANGES_TO_COMMIT=$(git diff-index --quiet HEAD || echo "true")
       # Commit formatted files
       - name: Commit Formatted Files
         run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
-        # Skip this step if there are no changes
-        if: ${{CHANGES_TO_COMMIT != '' }}
+        # Skip this step if there are no changes : 0 indicates there are changes and 1 indicates there are no changes
+        if: ${{git diff-index --quiet HEAD == 0}}
       - name: Push Formatted Changes
         run: git push origin HEAD:${{ github.head_ref }}
       - name: Run Flutter Analyze
