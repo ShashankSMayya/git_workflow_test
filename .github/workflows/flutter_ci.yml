@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  analyze:
+
+  format_and_analyze:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,6 +16,8 @@ jobs:
         with:
           flutter-version: '3.3.10'
           channel: 'stable'
+      - name: Run Flutter Format
+        run: flutter format --set-exit-if-changed
       - name: Run Flutter Analyze
         run: flutter analyze
       - name: Check for Issues
