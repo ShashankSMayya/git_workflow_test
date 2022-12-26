@@ -26,7 +26,7 @@ jobs:
       # Check if there are any changes to commit
       - name: Check for Changes
         run: |
-          if [[ -z "$(git status --porcelain)" ]]; then
+          if [[ -z "$(git diff --staged | grep .)" ]]; then
             echo "Nothing to commit"
             exit 0
           fi
