@@ -31,7 +31,7 @@ jobs:
       - name: Commit Formatted Files
         run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
         # Skip this step if there are no changes
-        if: ${{CHANGE_TO_COMMIT != '' }}
+        if: ${{CHANGES_TO_COMMIT != '' }}
       - name: Push Formatted Changes
         run: git push origin HEAD:${{ github.head_ref }}
       - name: Run Flutter Analyze
