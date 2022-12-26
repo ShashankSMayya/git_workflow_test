@@ -6,16 +6,40 @@ on:
       - main
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Flutter 3.3.10
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.10'
+          channel: 'stable'
+          cache: 'true'
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path:
+          ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:
+      - name: Run Flutter Format
+        run: flutter format lib
+      - name: Checkout Formatted Files
+        run: git checkout -- .
+      - name: Commit Formatted Files
+        run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
+      - name: Push Formatted Changes
+        run: git push origin HEAD:${{ github.head_ref }}
   analyze:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Flutter 3.3.0
+      - name: Use Flutter 3.3.10
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.3.10'
           channel: 'stable'
           cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path:
+          ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:
       - name: Run Flutter Analyze
         run: flutter analyze
       - name: Check for Issues
