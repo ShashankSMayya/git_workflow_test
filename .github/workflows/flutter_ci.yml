@@ -15,7 +15,7 @@ jobs:
         with:
           flutter-version: '3.3.10'
           channel: 'stable'
-          cache: 'true'
+          cache: true,
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
           cache-path:
           ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:
@@ -26,15 +26,12 @@ jobs:
       # Check if there are any changes to commit
       - name: Check for Changes
         run: |
-          if [[ -z "$(git diff --staged | grep .)" ]]; then
-            echo "Nothing to commit"
-            exit 0
-          fi
+          git diff-index --quiet HEAD || exit 0
       # Commit formatted files
       - name: Commit Formatted Files
         run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
         # Skip this step if there are no changes
-        if: ${{ always() != 'Nothing to commit' }}
+        if: ${{ success() }}
       - name: Push Formatted Changes
         run: git push origin HEAD:${{ github.head_ref }}
       - name: Run Flutter Analyze
