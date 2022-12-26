@@ -1,0 +1,24 @@
+name: Flutter CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Flutter 3.3.0
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.0'
+          channel: 'stable'
+      - name: Run Flutter Analyze
+        run: flutter analyze
+      - name: Check for Issues
+        if: ${{ steps.analyze.outputs.exit-code }} != 0 || ${{ steps.analyze.outputs.stdout | count }} > 0
+        run: exit 1
+
+
