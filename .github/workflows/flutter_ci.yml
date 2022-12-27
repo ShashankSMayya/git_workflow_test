@@ -7,6 +7,7 @@ on:
 jobs:
   check_branch_name:
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v3
       - name: Check branch name
@@ -24,6 +25,7 @@ jobs:
   check_commit_messages:
     runs-on: ubuntu-latest
     continue-on-error: false
+    needs: check_branch_name
     steps:
       - uses: actions/checkout@v3
       - name: Check commit messages
@@ -41,6 +43,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     continue-on-error: false
+    needs: check_commit_messages
     steps:
       - uses: actions/checkout@v3
       - name: Use Flutter 3.3.10
@@ -60,6 +63,7 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     continue-on-error: false
+    needs: format
     steps:
       - uses: actions/checkout@v3
       - name: Use Flutter 3.3.10
