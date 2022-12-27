@@ -2,7 +2,7 @@ name: Code Check
 on:
   pull_request:
     branches:
-      - develop
+      - [ main,develop ]
 
 jobs:
   check_branch_name:
