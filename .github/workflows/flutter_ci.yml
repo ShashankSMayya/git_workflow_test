@@ -13,7 +13,7 @@ jobs:
       - name: Check branch name
         run: |
           # Get the name of the new branch
-          NEW_BRANCH=$(git rev-parse --abbrev-ref HEAD)  
+          NEW_BRANCH=$(env.GITHUB_HEAD_REF)  
           # Check if the new branch name matches the regex
           if ! echo "$NEW_BRANCH" | grep -E '^(feature|bugfix|chore|other)\/MEVO-([0-9]+)(.+)$'; then
             # If the new branch name does not match the regex, fail the workflow
