@@ -8,7 +8,7 @@ jobs:
   check_branch_name:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check branch name
         run: |
           # Get the name of the new branch
@@ -23,8 +23,9 @@ jobs:
           echo "The new branch name is in the required format."
   check_commit_messages:
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check commit messages
         run: |
           # Check the commit messages of the new branch
@@ -39,12 +40,13 @@ jobs:
   
   format:
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v3
-      - name: Use Flutter 3.3.3
+      - name: Use Flutter 3.3.10
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.3.3'
+          flutter-version: '3.3.10'
       - name: Run Flutter Format
         run: flutter format lib
       - name: Checkout Formatted Files
@@ -55,12 +57,13 @@ jobs:
         run: git push origin HEAD:${{ github.head_ref }}
   analyze:
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v3
-      - name: Use Flutter 3.3.3
+      - name: Use Flutter 3.3.10
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.3.3'
+          flutter-version: '3.3.10'
       - name: Run Flutter Analyze
         run: flutter analyze
       - name: Check for Issues
