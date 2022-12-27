@@ -15,7 +15,7 @@ jobs:
       - name: Check branch name
         run: |
           # Get the name of the new branch
-          BRANCH_NAME=${{ steps.branch-name.outputs.branch }}
+          BRANCH_NAME=${{ steps.branch-name.outputs.current_branch }}
           echo " The Branch Name : ${BRANCH_NAME}"
           # Check if the new branch name matches the regex
           if ! echo "${BRANCH_NAME}" | grep -E '^(feature|bugfix|chore|other)\/MEVO-([0-9]+)(.+)$'; then
