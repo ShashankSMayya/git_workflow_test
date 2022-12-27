@@ -9,19 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Get Current Branch name
+      - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v6
-
       - name: Check branch name
         run: |
           # Get the name of the new branch
-          NEW_BRANCH=steps.branch-name.outputs.current_branch
-          echo "$NEW_BRANCH"
+          BRANCH_NAME=${{ steps.branch-name.outputs.branch }}
+          echo " The Branch Name : ${BRANCH_NAME}"
           # Check if the new branch name matches the regex
-          if ! echo "$NEW_BRANCH" | grep -E '^(feature|bugfix|chore|other)\/MEVO-([0-9]+)(.+)$'; then
+          if ! echo "${BRANCH_NAME}" | grep -E '^(feature|bugfix|chore|other)\/MEVO-([0-9]+)(.+)$'; then
             # If the new branch name does not match the regex, fail the workflow
             echo "Error: The new branch name does not match the required format."
             exit 1
