@@ -2,12 +2,11 @@ name: Code Check
 on:
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   check_branch_name:
     runs-on: ubuntu-latest
-    continue-on-error: false
     steps:
       - name: Get branch name
         id: branch-name
@@ -25,29 +24,27 @@ jobs:
           fi
           # If the new branch name matches the regex, continue with the rest of the workflow
           echo "The new branch name is in the required format."
-#  check_commit_messages:
-#    runs-on: ubuntu-latest
-#    continue-on-error: false
-#    needs: check_branch_name
-#    steps:
-#      - name: Check commit messages
-#        run: |
-#          # Check the commit messages of the new branch
-#          COMMIT_MESSAGE=${{ github.event.head_commit.message }}
-#          echo "The commit message is : ${COMMIT_MESSAGE}"
-#          if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
-#            # If the commit messages do not match the regex, fail the workflow
-#            echo "Error: The commit messages do not match the required format."
-#            exit 1
-#          fi
-#
-#          # If the commit messages match the regex, continue with the rest of the workflow
-#          echo "The commit messages are in the required format."
-#
+  #  check_commit_messages:
+  #    runs-on: ubuntu-latest
+  #    continue-on-error: false
+  #    needs: check_branch_name
+  #    steps:
+  #      - name: Check commit messages
+  #        run: |
+  #          # Check the commit messages of the new branch
+  #          COMMIT_MESSAGE=${{ github.event.head_commit.message }}
+  #          echo "The commit message is : ${COMMIT_MESSAGE}"
+  #          if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
+  #            # If the commit messages do not match the regex, fail the workflow
+  #            echo "Error: The commit messages do not match the required format."
+  #            exit 1
+  #          fi
+  #
+  #          # If the commit messages match the regex, continue with the rest of the workflow
+  #          echo "The commit messages are in the required format."
+  #
   format:
     runs-on: ubuntu-latest
-    continue-on-error: false
-    needs: check_branch_name
     steps:
       - uses: actions/checkout@v3
       - name: Use Flutter 3.3.10
@@ -56,19 +53,17 @@ jobs:
           flutter-version: '3.3.10'
           cache: true
       - name: Run Flutter Format
-        run: flutter format lib
-      - name: Checkout Formatted Files
-        run: git checkout -- .
-      - name: Check if changes were made then commit and push
-        run: |
-          if ! git diff-index --quiet HEAD --; then
-            git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
-            git push origin HEAD:${{ github.head_ref }} 
-          fi
+        run: flutter format lib --set-exit-if-changed
+  #      - name: Checkout Formatted Files
+  #        run: git checkout -- .
+  #      - name: Check if changes were made then commit and push
+  #        run: |
+  #          if ! git diff-index --quiet HEAD --; then
+  #            git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
+  #            git push origin HEAD:${{ github.head_ref }}
+  #          fi
   analyze:
     runs-on: ubuntu-latest
-    continue-on-error: false
-    needs: format
     steps:
       - uses: actions/checkout@v3
       - name: Use Flutter 3.3.10
