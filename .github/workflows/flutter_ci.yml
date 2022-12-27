@@ -25,29 +25,29 @@ jobs:
           fi
           # If the new branch name matches the regex, continue with the rest of the workflow
           echo "The new branch name is in the required format."
-  check_commit_messages:
-    runs-on: ubuntu-latest
-    continue-on-error: false
-    needs: check_branch_name
-    steps:
-      - name: Check commit messages
-        run: |
-          # Check the commit messages of the new branch
-          COMMIT_MESSAGE=${{ github.event.head_commit.message }}
-          echo "The commit message is : ${COMMIT_MESSAGE}"
-          if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
-            # If the commit messages do not match the regex, fail the workflow
-            echo "Error: The commit messages do not match the required format."
-            exit 1
-          fi
-          
-          # If the commit messages match the regex, continue with the rest of the workflow
-          echo "The commit messages are in the required format."
-  
+#  check_commit_messages:
+#    runs-on: ubuntu-latest
+#    continue-on-error: false
+#    needs: check_branch_name
+#    steps:
+#      - name: Check commit messages
+#        run: |
+#          # Check the commit messages of the new branch
+#          COMMIT_MESSAGE=${{ github.event.head_commit.message }}
+#          echo "The commit message is : ${COMMIT_MESSAGE}"
+#          if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
+#            # If the commit messages do not match the regex, fail the workflow
+#            echo "Error: The commit messages do not match the required format."
+#            exit 1
+#          fi
+#
+#          # If the commit messages match the regex, continue with the rest of the workflow
+#          echo "The commit messages are in the required format."
+#
   format:
     runs-on: ubuntu-latest
     continue-on-error: false
-    needs: check_commit_messages
+    needs: check_branch_name
     steps:
       - uses: actions/checkout@v3
       - name: Use Flutter 3.3.10
