@@ -53,6 +53,7 @@ jobs:
         run: git checkout -- .
       - name: Commit Formatted Files
         run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
+        if: ${git.diff-index --quiet HEAD --}
       - name: Push Formatted Changes
         run: git push origin HEAD:${{ github.head_ref }}
   analyze:
