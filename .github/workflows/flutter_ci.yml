@@ -34,6 +34,7 @@ jobs:
         run: |
           # Check the commit messages of the new branch
           COMMIT_MESSAGE=${{ github.event.head_commit.message }}
+          echo "The commit message is : ${COMMIT_MESSAGE}"
           if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
             # If the commit messages do not match the regex, fail the workflow
             echo "Error: The commit messages do not match the required format."
