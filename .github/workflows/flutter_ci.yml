@@ -1,37 +1,69 @@
-name: Flutter CI
-
+name: Code Check
 on:
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
-  format-analyze:
+  check_branch_name:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check branch name
+        run: |
+          # Get the name of the new branch
+          NEW_BRANCH=$(git rev-parse --abbrev-ref HEAD)  
+          # Check if the new branch name matches the regex
+          if ! echo "$NEW_BRANCH" | grep -E '^(feature|bugfix|chore|other)\/MEVO-([0-9]+)(.+)$'; then
+            # If the new branch name does not match the regex, fail the workflow
+            echo "Error: The new branch name does not match the required format."
+            exit 1
+          fi
+          # If the new branch name matches the regex, continue with the rest of the workflow
+          echo "The new branch name is in the required format."
+  check_commit_messages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check commit messages
+        run: |
+          # Check the commit messages of the new branch
+          if ! git log --oneline | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
+            # If the commit messages do not match the regex, fail the workflow
+            echo "Error: The commit messages do not match the required format."
+            exit 1
+          fi
+          
+          # If the commit messages match the regex, continue with the rest of the workflow
+          echo "The commit messages are in the required format."
+  
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Flutter 3.3.10
+      - name: Use Flutter 3.3.3
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.3.10'
-          channel: 'stable'
-          cache: 'true'
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path:
-          ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:
+          flutter-version: '3.3.3'
       - name: Run Flutter Format
         run: flutter format lib
       - name: Checkout Formatted Files
         run: git checkout -- .
-      # Commit formatted files
       - name: Commit Formatted Files
         run: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && git commit -am "Format code"
-        # Skip this step if there are no changes : 0 indicates there are changes and 1 indicates there are no changes
-        if: git diff-index --quiet HEAD == 0
       - name: Push Formatted Changes
         run: git push origin HEAD:${{ github.head_ref }}
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Flutter 3.3.3
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.3'
       - name: Run Flutter Analyze
         run: flutter analyze
       - name: Check for Issues
-        if: ${{ steps.analyze.outputs.exit-code != 0}}
+        if: ${{ steps.analyze.outputs.exit-code != 0 }}
         run: exit 1
+
