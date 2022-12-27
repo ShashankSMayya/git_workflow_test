@@ -30,11 +30,10 @@ jobs:
     continue-on-error: false
     needs: check_branch_name
     steps:
-      - uses: actions/checkout@v3
       - name: Check commit messages
         run: |
           # Check the commit messages of the new branch
-          COMMIT_MESSAGE=$(git log --oneline)
+          COMMIT_MESSAGE=${{ github.event.head_commit.message }}
           if ! COMMIT_MESSAGE | grep -E '^(feature|bugfix|chore|other)\:MEVO-([0-9]+)(.+)$'; then
             # If the commit messages do not match the regex, fail the workflow
             echo "Error: The commit messages do not match the required format."
